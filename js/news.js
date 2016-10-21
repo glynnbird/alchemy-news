@@ -3,6 +3,10 @@ var db = null;
 var lastDoc = null;
 var lastTaxonomy = null;
 var lastArticles = null;
+var CLOUDANT_PROTOCOL = 'https';
+var CLOUDANT_HOST = 'reader.cloudant.com';
+var CLOUDANT_URL = CLOUDANT_PROTOCOL + '://' + CLOUDANT_HOST;
+var CLOUDANT_DB = 'alchemy';
 
 var last = function(k) {
   return k[k.length-1];
@@ -66,7 +70,6 @@ var getTaxonomy = function(key) {
   });
 };
 
-
 var fetchNewest = function() {
   db.query('enhanced/newest',{ descending:true, limit:15}).then(function(data) {
     var html = '';
@@ -119,6 +122,26 @@ var fetchTag = function(opts) {
   });
 };
 
+var fetchSearch = function(opts) {
+  var r = {
+    method: 'get',
+    protocol: CLOUDANT_PROTOCOL,
+    host: CLOUDANT_HOST,
+    db: CLOUDANT_DB,
+    url: '_design/enhanced/_search/search?limit=20&q=' + encodeURIComponent(opts.search)
+  };
+  db.request(r).then(function(data) {
+    var html = '';
+    var template = $('#articles-template').html();
+    Mustache.parse(template);
+    for(var i in data.rows) {
+      data.rows[i].value = data.rows[i].fields.title;
+      html += Mustache.render(template, data.rows[i]);
+    }
+    $('#articles').html(html);
+  });
+};
+
 var getLatest = function(opts) {
   console.log('getLatest opts', opts);
   var optstr = JSON.stringify(opts);
@@ -128,16 +151,16 @@ var getLatest = function(opts) {
   }
   console.log('getting latest');
   lastArticles = optstr;
-  if (typeof opts.tag == 'string') {
+  if (typeof opts.search == 'string' && opts.search.length > 0) {
+    fetchSearch(opts);
+  } else if (typeof opts.tag == 'string') {
     fetchTag(opts);
   } else if (typeof opts.taxonomy == 'object' && opts.taxonomy.length == 0) {
     fetchNewest();
   } else {
     fetchTaxonomy(opts);
   }
-
 };
-
 
 var parseHash = function() {
   var hash = location.hash;
@@ -175,12 +198,14 @@ var selectDoc = function(id) {
 var selectCategory = function(taxonomy) {
   var h = parseHash();
   delete h.tag;
+  delete h.search;
   h.taxonomy = JSON.stringify(taxonomy);
   location.hash = generateHash(h);
 }
 
 var selectTag = function(tag) {
   var h = parseHash();
+  delete h.search;
   h.tag = tag;
   h.taxonomy = JSON.stringify([]);
   location.hash = generateHash(h);
@@ -222,10 +247,21 @@ var locationHashChanged = function () {
   renderPage();
 }
 
+var doSearch = function( event ) {
+  event.preventDefault();
+  var h = parseHash();
+  delete h.tag;
+  h.taxonomy = JSON.stringify([]);
+  h.search = $('#searchterm').val();
+  $('#searchterm').val('');
+  $('#searchterm').blur();
+  location.hash = generateHash(h);
+}
 
 $(function() {
-  var CloudantURL = 'https://reader.cloudant.com/alchemy';
+  var CloudantURL = CLOUDANT_URL + '/' + CLOUDANT_DB;
   db = new PouchDB(CloudantURL);
   window.onhashchange = locationHashChanged;
+  $( "#search" ).submit(doSearch);
   renderPage();
 });
