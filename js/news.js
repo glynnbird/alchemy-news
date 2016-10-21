@@ -191,8 +191,6 @@ var selectDoc = function(id) {
   var h = parseHash();
   h.id = id;
   location.hash = generateHash(h);
-  //$('.article-item').removeClass('active');
-  //$('#' + id).addClass('active');
 };
 
 var selectCategory = function(taxonomy) {
