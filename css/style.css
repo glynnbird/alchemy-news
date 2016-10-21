@@ -1,0 +1,21 @@
+.icon-block {
+  padding: 0 15px;
+}
+.icon-block .material-icons {
+	font-size: inherit;
+}
+
+.copyright {
+  color: #999;
+  font-size:12px;
+}
+
+.taxonomy-item {
+  text-transform: capitalize;
+}
+
+.breadcrumb-item {
+  text-transform: capitalize;
+}
+
+
