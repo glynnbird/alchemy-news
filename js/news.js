@@ -23,6 +23,8 @@ var showBreadcrumb = function(taxlinks, tag) {
   Mustache.parse(template);
   html += Mustache.render(template, obj);
 
+  console.log(taxlinks, tag);
+
   if (tag) {
     template = $('#breadcrumb-template-tag').html();
     Mustache.parse(template);
@@ -36,6 +38,7 @@ var showBreadcrumb = function(taxlinks, tag) {
       html += Mustache.render(template, obj);
     }
   }
+  console.log(html);
   $('#breadcrumb').html(html);
 
 }
