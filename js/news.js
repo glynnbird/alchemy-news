@@ -259,10 +259,91 @@ var doSearch = function( event ) {
   location.hash = generateHash(h);
 }
 
+var renderCountries = function() {
+  var startkey = ['Country:'];
+  var endkey = ['Country:z'];
+  var o = {
+    startkey: startkey,
+    endkey: endkey,
+    group_level: 1
+  };
+  console.log(o);
+  db.query('enhanced/entities',o).then(function(data) {
+    var template = $('#countries-template').html();
+    Mustache.parse(template);
+    for(var i in data.rows) {
+      data.rows[i].key = data.rows[i].key[0];
+      data.rows[i].name = data.rows[i].key.replace(/Country:/,'');
+    }
+    var html = Mustache.render(template, data);
+    $('#countries').html(html);
+    $('select').material_select();
+    $('#countrieslist').change(function() {
+      var str = $( "#countrieslist option:selected" ).val();
+      selectTag(str);
+    });
+  });
+};
+
+var renderCities = function() {
+  var startkey = ['City:'];
+  var endkey = ['City:z'];
+  var o = {
+    startkey: startkey,
+    endkey: endkey,
+    group_level: 1
+  };
+  console.log(o);
+  db.query('enhanced/entities',o).then(function(data) {
+    var template = $('#cities-template').html();
+    Mustache.parse(template);
+    for(var i in data.rows) {
+      data.rows[i].key = data.rows[i].key[0];
+      data.rows[i].name = data.rows[i].key.replace(/City:/,'');
+    }
+    var html = Mustache.render(template, data);
+    $('#cities').html(html);
+    $('select').material_select();
+    $('#citieslist').change(function() {
+      var str = $( "#citieslist option:selected" ).val();
+      selectTag(str);
+    });
+  });
+};
+
+var renderCompanies = function() {
+  var startkey = ['Company:'];
+  var endkey = ['Company:z'];
+  var o = {
+    startkey: startkey,
+    endkey: endkey,
+    group_level: 1
+  };
+  console.log(o);
+  db.query('enhanced/entities',o).then(function(data) {
+    var template = $('#companies-template').html();
+    Mustache.parse(template);
+    for(var i in data.rows) {
+      data.rows[i].key = data.rows[i].key[0];
+      data.rows[i].name = data.rows[i].key.replace(/Company:/,'');
+    }
+    var html = Mustache.render(template, data);
+    $('#companies').html(html);
+    $('select').material_select();
+    $('#companieslist').change(function() {
+      var str = $( "#companieslist option:selected" ).val();
+      selectTag(str);
+    });
+  });
+};
+
 $(function() {
   var CloudantURL = CLOUDANT_URL + '/' + CLOUDANT_DB;
   db = new PouchDB(CloudantURL);
   window.onhashchange = locationHashChanged;
   $( "#search" ).submit(doSearch);
   renderPage();
+  renderCountries();
+  renderCities();
+  renderCompanies();
 });

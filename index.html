@@ -29,21 +29,30 @@
       </form>
     </div>
 	</nav>
-
+	
 	<div class="">
 		<div class="row">
-			<div class="col s12 m3">
-         <div id="taxonomy" class="collection">
-         </div>
+			<div id="menu" class="col s12 m4">
+				<ul class="tabs text-blue">
+					<li class="tab col s2 text-blue"><a href="#taxonomy">Taxonomy</a></li>
+					<li class="tab col s2 text-blue"><a href="#entities">Entities</a></li>
+				</ul>
+         <div id="taxonomy" class="collection"></div>
+				 <div id="entities">
+           <div id="countries"></div>
+					 <div id="cities"></div>
+					 <div id="companies"></div>
+				 </div>
 			</div>
 			<div class="col s12 m4">
         <div id="articles" class="collection">
         </div>
 			</div>
-      <div class="col s12 m5" id="article">
+      <div class="col s12 m4" id="article">
 			</div>
 		</div>
 	</div>
+
 
 	<script id="breadcrumb-template" type="x-tmpl-mustache">
       <a href="Javascript:selectCategory({{ taxonomy }})" class="breadcrumb breadcrumb-item">{{ label }}</a>
@@ -77,6 +86,39 @@
 
     <div class="copyright">{{ article.meta.copyright }}</div>
   </script>
+
+	<script id="countries-template" type="x-tmpl-mustache">
+    <div id="countriesfield" class="input-field col s12 light-blue lighten-1 white-text">
+			<select id="countrieslist">
+			   <option value="" disabled selected>Choose a country</option>
+				 {{#rows}}
+					 <option value="{{key}}">{{name}}</option>
+				 {{/rows}}
+		  </select>
+		</div>
+	</script>
+
+	<script id="cities-template" type="x-tmpl-mustache">
+    <div id="citiesfield" class="input-field col s12 light-blue lighten-1 white-text">
+			<select id="citieslist">
+			   <option value="" disabled selected>Choose a city</option>
+				 {{#rows}}
+					 <option value="{{key}}">{{name}}</option>
+				 {{/rows}}
+		  </select>
+		</div>
+	</script>
+
+	<script id="companies-template" type="x-tmpl-mustache">
+    <div id="companiesfield" class="input-field col s12 light-blue lighten-1 white-text">
+			<select id="companieslist">
+			   <option value="" disabled selected>Choose a company</option>
+				 {{#rows}}
+					 <option value="{{key}}">{{name}}</option>
+				 {{/rows}}
+		  </select>
+		</div>
+	</script>
 
 	<!--  Scripts-->
 	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
